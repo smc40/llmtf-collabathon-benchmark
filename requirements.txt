@@ -5,3 +5,4 @@ rouge-score
 nltk
 scikit-learn
 spacy
+openai
