@@ -14,9 +14,11 @@ streamlit run app.py
 
 
 ## ToDo
-x remove table of uploads
-x average token lenghts
-X model selection
-X add to the blue score
-- paragraph similarity -> sentence transformers / sentencepiece library -> https: //sbert.net/ --> cosine
-X add recall, precision and f1
+
+
+- [x] remove table of uploads
+- [x] average token lenghts
+- [x] model selection
+- [x] add to the blue score
+- [x] add recall, precision and f1
+- [ ] paragraph similarity -> sentence transformers / sentencepiece library -> https: //sbert.net/ --> cosine
