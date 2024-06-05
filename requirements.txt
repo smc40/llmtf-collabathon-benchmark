@@ -1,0 +1,6 @@
+streamlit
+pandas
+googletrans
+rouge-score
+nltk
+scikit-learn

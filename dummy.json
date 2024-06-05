@@ -1,0 +1,32 @@
+[
+    {
+        "full-text": "The COVID-19 pandemic has led to significant disruptions in global supply chains, impacting various industries. Companies are now looking for ways to mitigate these disruptions and build more resilient supply networks.",
+        "summary": "COVID-19 has disrupted global supply chains, leading companies to seek more resilient networks.",
+        "source": "MHRA",
+        "URL": "gov.uk/mhra"
+    },
+    {
+        "full-text": "New research shows that a balanced diet rich in fruits and vegetables can significantly reduce the risk of chronic diseases such as heart disease and diabetes. The study emphasizes the importance of dietary choices in maintaining overall health.",
+        "summary": "A diet rich in fruits and vegetables reduces the risk of chronic diseases like heart disease and diabetes.",
+        "source": "EFSA",
+        "URL": "efsa.europa.eu"
+    },
+    {
+        "full-text": "Advancements in renewable energy technologies are driving down costs and increasing adoption rates worldwide. Solar and wind energy projects are now more competitive with traditional fossil fuels, offering a sustainable alternative for the future.",
+        "summary": "Renewable energy technologies, like solar and wind, are becoming more competitive with fossil fuels.",
+        "source": "SMC",
+        "URL": "swissmedic.ch"
+    },
+    {
+        "full-text": "The recent approval of a new cancer drug has provided hope for patients with advanced stages of the disease. Clinical trials have shown promising results, with significant improvements in survival rates and quality of life.",
+        "summary": "A new cancer drug shows promising results in improving survival rates and quality of life for patients with advanced stages of the disease.",
+        "source": "MHRA",
+        "URL": "gov.uk/mhra"
+    },
+    {
+        "full-text": "Climate change continues to pose a significant threat to biodiversity, with many species facing extinction due to habitat loss and changing environmental conditions. Conservation efforts are critical to protect endangered species and preserve ecosystems.",
+        "summary": "Climate change threatens biodiversity, making conservation efforts crucial for protecting endangered species.",
+        "source": "EFSA",
+        "URL": "efsa.europa.eu"
+    }
+]
