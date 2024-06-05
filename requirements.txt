@@ -4,3 +4,4 @@ googletrans
 rouge-score
 nltk
 scikit-learn
+spacy

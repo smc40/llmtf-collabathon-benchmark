@@ -7,6 +7,10 @@ from rouge_score import rouge_scorer
 from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 import nltk
 
+import spacy
+
+nlp = spacy.load("en_core_web_sm")
+
 # # Download NLTK data
 # nltk.download("punkt")
 
@@ -76,14 +80,16 @@ st.write(
 
 uploaded_file = st.file_uploader("Upload JSON File", type="json")
 
+import nlp
+
 if uploaded_file:
     df = process_uploaded_file(uploaded_file)
     if df is not None:
-        st.write("Uploaded Data:")
-        st.write(df)
 
         # Insights per source
         insights = df["source"].value_counts().to_frame().reset_index()
+        insights["tokens_len_summary"] = len(nlp(df["summary"]))
+
         insights.columns = ["Source", "Count"]
         insights["Flag"] = insights["Source"].map(
             {"MHRA": "🇬🇧", "EFSA": "🇪🇺", "SMC": "🇨🇭"}
@@ -147,7 +153,7 @@ if uploaded_file:
 
             with st.expander("How does ROUGE score work?"):
                 st.write(
-                    "ROUGE score measures the similarity between the machine-generated summary and the reference summaries using overlapping n-grams, word sequences that appear in both the machine-generated summary and the reference summaries. The most common n-grams used are unigrams, bigrams, and trigrams. ROUGE score calculates the recall of n-grams in the machine-generated summary by comparing them to the reference summaries."
+                    "ROUGE score measures the similarity between the machine-generated summary and the reference summaries using overlapping n-grams, word sequences that appear in both the machine-generated summary and the reference summaries. The most common n-grams used are unigrams, bigrams, and trigrams. ROUGE score calculates the recall of n-grams in the machine-generated summary by comparing them to the reference summaries. ROUGE-N (N-gram) scoring. ROUGE-L (Longest Common Subsequence) scoring"
                 )
                 st.write(
                     "https://medium.com/@sthanikamsanthosh1994/understanding-bleu-and-rouge-score-for-nlp-evaluation-1ab334ecadcb#:~:text=ROUGE%20score%20measures%20the%20similarity,unigrams%2C%20bigrams%2C%20and%20trigrams."
