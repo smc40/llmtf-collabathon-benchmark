@@ -18,7 +18,7 @@ nlp = spacy.load("en_core_web_sm")
 # nltk.download("punkt")
 
 # Set the mode (either "dummy" or "real")
-MODE = "dummy"
+MODE = "real"
 models = ["gpt-4", "gpt-35-turbo"]
 
 
@@ -27,7 +27,7 @@ st.set_page_config(layout="wide")
 
 @st.cache_data
 def generate_summary(
-    summary: str,
+    full_text: str,
     selected_models: str,
     user_prompt: str,
     system_prompt: str = "You are a helpful assistant.",
@@ -41,7 +41,10 @@ def generate_summary(
     response = client.chat.completions.create(
         model=selected_models,  # model = "gpt-35-turbo" or "gpt-4".
         messages=[
-            {"role": "system", "content": system_prompt},
+            {
+                "role": "system",
+                "content": f"{system_prompt} \ntext to summarize: {full_text}",
+            },
             {"role": "user", "content": user_prompt},
         ],
     )
@@ -50,6 +53,7 @@ def generate_summary(
 
 
 # Define a function to validate the JSON structure
+@st.cache_data
 def validate_json_structure(data):
     if not isinstance(data, list):
         return False
@@ -239,7 +243,6 @@ if uploaded_file:
                         "Recall": avg_recall,
                         "Precision": avg_precision,
                         "F1": avg_f1,
-                        "Time (s)": total_time,
                     }
                 )
 
@@ -248,6 +251,7 @@ if uploaded_file:
             st.write(df)
 
             st.write("Measures:")
+            st.write(f"It took a total of {total_time} seconds to run the benchmark")
             st.write(scores_df)
 
             with st.expander("How does ROUGE score work?"):
