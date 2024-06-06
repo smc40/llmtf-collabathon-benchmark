@@ -5,4 +5,4 @@ rouge-score
 nltk
 scikit-learn
 spacy
-openai
+openai==1.31.0

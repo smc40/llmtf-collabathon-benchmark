@@ -6,12 +6,8 @@ import os
 from time import time
 from rouge_score import rouge_scorer
 from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
-import nltk
 from openai import AzureOpenAI
-import spacy
 import time as times
-
-nlp = spacy.load("en_core_web_sm")
 
 # Set the mode (either "dummy" or "real")
 MODE = "real"
@@ -108,8 +104,7 @@ def process_uploaded_file(uploaded_file):
 
 
 def calculate_token_length(text):
-    doc = nlp(text)
-    return len(doc)
+    return len(text.split(" "))
 
 
 def calculate_f1_recall_precision(reference, predicted):
