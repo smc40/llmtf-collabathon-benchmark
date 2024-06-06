@@ -5,17 +5,20 @@ import random
 from time import time
 from rouge_score import rouge_scorer
 from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
-import nltk
 
 import os
 from openai import AzureOpenAI
 
 import spacy
 
-nlp = spacy.load("en_core_web_sm")
 
-# # Download NLTK data
-# nltk.download("punkt")
+@st.cache_resource
+def load_model():
+    spacy.cli.download("en_core_web_sm")  # Download the model
+    return spacy.load("en_core_web_sm")
+
+
+nlp = load_model()
 
 # Set the mode (either "dummy" or "real")
 MODE = "real"
