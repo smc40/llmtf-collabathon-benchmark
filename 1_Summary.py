@@ -58,7 +58,10 @@ show = exitster()
 
 @st.cache_data
 def generate_summary(
-    full_text, selected_model, user_prompt, system_prompt="You are a helpful assistant."
+    full_text: str,
+    selected_models: str,
+    user_prompt: str,
+    system_prompt: str = "You are a helpful assistant.",
 ):
     client = AzureOpenAI(
         azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
@@ -79,14 +82,8 @@ def generate_summary(
     print(msg)
 
     response = client.chat.completions.create(
-        model=selected_model,
-        messages=[
-            {
-                "role": "system",
-                "content": f"{system_prompt} \ntext to summarize: {full_text}",
-            },
-            {"role": "user", "content": user_prompt},
-        ],
+        model=selected_models,  # model = "gpt-35-turbo" or "gpt-4".
+        messages=msg,
     )
 
     return response.choices[0].message.content
