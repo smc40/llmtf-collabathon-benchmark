@@ -35,13 +35,30 @@ def exitster(filename="./data/results.json"):
 
 show = exitster()
 
+# Streamlit application
+st.title("Benchmark your LLM on creating a Summary")
+st.write("PoC build during the Collabathon of the LLM Taskforce 2024 in Bern")
+
+
+# Create data directory if it doesn't exist
+if not os.path.exists("./data"):
+    os.makedirs("./data")
+
+df = pd.DataFrame()
+
+
+def exitster(filename="./data/results.json"):
+    if os.path.exists(filename):
+        return True
+    return False
+
+
+show = exitster()
+
 
 @st.cache_data
 def generate_summary(
-    full_text: str,
-    selected_models: str,
-    user_prompt: str,
-    system_prompt: str = "You are a helpful assistant.",
+    full_text, selected_model, user_prompt, system_prompt="You are a helpful assistant."
 ):
     client = AzureOpenAI(
         azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
@@ -62,8 +79,14 @@ def generate_summary(
     print(msg)
 
     response = client.chat.completions.create(
-        model=selected_models,  # model = "gpt-35-turbo" or "gpt-4".
-        messages=msg,
+        model=selected_model,
+        messages=[
+            {
+                "role": "system",
+                "content": f"{system_prompt} \ntext to summarize: {full_text}",
+            },
+            {"role": "user", "content": user_prompt},
+        ],
     )
 
     return response.choices[0].message.content
@@ -111,6 +134,14 @@ def process_uploaded_file(uploaded_file):
     # else:
     #     return pd.DataFrame()
 
+    df = pd.DataFrame(data)
+    return df
+    # if validate_json_structure(data):
+    #     df = pd.DataFrame(data)
+    #     return df
+    # else:
+    #     return pd.DataFrame()
+
 
 def calculate_token_length(text):
     return len(text.split(" "))
@@ -133,6 +164,16 @@ def calculate_f1_recall_precision(reference, predicted):
     )
 
     return f1, recall, precision
+
+
+def save_results_to_file(results, filename="./data/results.json"):
+    results.to_json(filename, orient="records")
+
+
+def load_results_from_file(filename="./data/results.json"):
+    if os.path.exists(filename):
+        return pd.read_json(filename)
+    return pd.DataFrame()
 
 
 def save_results_to_file(results, filename="./data/results.json"):
