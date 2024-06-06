@@ -9,16 +9,6 @@ from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 import os
 from openai import AzureOpenAI
 
-import spacy
-
-
-@st.cache_resource
-def load_model():
-    spacy.cli.download("en_core_web_sm")  # Download the model
-    return spacy.load("en_core_web_sm")
-
-
-nlp = load_model()
 
 # Set the mode (either "dummy" or "real")
 MODE = "real"
@@ -116,9 +106,8 @@ st.write(
 
 
 # Function to calculate token length
-def calculate_token_length(text):
-    doc = nlp(text)
-    return len(doc)
+def calculate_number_of_words(text):
+    return len(text.split())
 
 
 def calculate_f1_recall_precision(reference, predicted):
@@ -159,13 +148,13 @@ if uploaded_file:
         grouped_df = df.groupby("source")
 
         # Calculate token length for each summary
-        df["tokens_len_full_text"] = df["full-text"].apply(calculate_token_length)
+        df["tokens_len_full_text"] = df["full-text"].apply(calculate_number_of_words)
         insights["tokens_len_full_text"] = (
             grouped_df["tokens_len_full_text"].mean().values
         )
 
         # Calculate token length for each summary
-        df["tokens_len_summary"] = df["summary"].apply(calculate_token_length)
+        df["tokens_len_summary"] = df["summary"].apply(calculate_number_of_words)
         insights["tokens_len_summary"] = grouped_df["tokens_len_summary"].mean().values
 
         st.write("Insights per source:")
@@ -210,7 +199,7 @@ if uploaded_file:
 
             # Calculate token length for each summary
             df["tokens_len_summary_predicted"] = df["summary"].apply(
-                calculate_token_length
+                calculate_number_of_words
             )
             insights["tokens_len_summary_predicted"] = (
                 grouped_df["tokens_len_summary_predicted"].mean().values
