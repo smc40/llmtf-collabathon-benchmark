@@ -30,10 +30,10 @@ if 'counter' not in st.session_state:
     st.session_state.counter = 0
 
 def count_up():
-    st.session_state.counter += 1
+    st.session_state.counter = (st.session_state.counter + 1) % len(df)
 
 def count_down():
-    st.session_state.counter -= 1
+    st.session_state.counter = (st.session_state.counter - 1) % len(df)
 
 col_1, col_2, col_3, col_4, col_5, col_6 = st.columns(6)
 
