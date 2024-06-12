@@ -13,7 +13,6 @@ st.write("")
 st.write("")
 
 
-
 # Loading results.json
 def load_results_from_file(filename="./data/results.json"):
     if os.path.exists(filename):
