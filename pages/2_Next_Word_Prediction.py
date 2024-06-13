@@ -17,7 +17,6 @@ load_dotenv()
 # )
 
 
-
 # Create OpenAI Variables
 client = OpenAI(
    api_key = os.environ.get("OPENAI_API_KEY")
@@ -28,6 +27,13 @@ client = OpenAI(
 with open("eval_next_word_efsa.json", 'r') as file:
     df = pd.read_json(file)
 
+
+
+def result_json_present(filename="./data/next_word_prediction_results.json"):
+    if os.path.exists(filename):
+        return True
+    return False
+    
 
 
 # get the next word prediction by submitting the prefix and then calling the openai api
@@ -57,24 +63,32 @@ def evaluate_next_words(next_word_predictions, next_word: str):
         return 0
 
 
-results = []
+if True:
+    # check if results are present, if yes, load and store it in data frame
+    if result_json_present():
+        data = pd.read_json("./data/next_word_prediction_results.json")
+        results_df = pd.DataFrame(data)
 
-for i, row in df.head(20).iterrows():
-    next_word_predictions = get_next_word_predictions(row['prefix'])
-    evaluation = evaluate_next_words(next_word_predictions, row['next-word'])
-    results.append({
-        'prefix': row['prefix'],
-        'next-word': row['next-word'],
-        'evaluation': evaluation
-    })
+    # iterate over data to get all results
+    else: 
+        results = []
+        for i, row in df.iterrows():
+            next_word_predictions = get_next_word_predictions(row['prefix'])
+            evaluation = evaluate_next_words(next_word_predictions, row['next-word'])
+            results.append({
+                'prefix': row['prefix'],
+                'next-word': row['next-word'],
+                'evaluation': evaluation
+            })
+        results_df = pd.DataFrame(results)
+        results_df.to_json("./data/next_word_prediction_results.json", orient="records")
 
+    eval_score = results_df['evaluation'].sum() / len(results_df)
 
-results_df = pd.DataFrame(results)
-eval_score = results_df['evaluation'].sum() / len(results_df)
+        
 
-
-st.write(results_df)
-st.write(eval_score)
+    st.write(results_df)
+    st.write(eval_score)
 
 # for choice in response.choices:
 #  print(choice.message.content)
