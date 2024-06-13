@@ -49,27 +49,32 @@ def get_next_word_predictions(prefix: str):
 # compare the predicted next words to the golden next word by submittng predictions and gold standard
 def evaluate_next_words(next_word_predictions, next_word: str):
     translator = str.maketrans('', '', string.punctuation) # translator that maps all punctuation to non
-    
     all_predicted_next_words = set([ choice.message.content.split()[0].translate(translator) for choice in next_word_predictions.choices])
 
-    st.write(all_predicted_next_words)
-    
     if next_word in all_predicted_next_words:
         return 1
     else: 
         return 0
 
-i=1
 
-st.write(df.at[i, 'prefix'])
+results = []
 
-next_word_predictions = get_next_word_predictions(df.at[i, 'prefix'])
+for i, row in df.head(20).iterrows():
+    next_word_predictions = get_next_word_predictions(row['prefix'])
+    evaluation = evaluate_next_words(next_word_predictions, row['next-word'])
+    results.append({
+        'prefix': row['prefix'],
+        'next-word': row['next-word'],
+        'evaluation': evaluation
+    })
 
-st.write(next_word_predictions.choices)
 
-evalutation = evaluate_next_words(next_word_predictions, df.at[i, 'next-word'])
+results_df = pd.DataFrame(results)
+eval_score = results_df['evaluation'].sum() / len(results_df)
 
-st.write(evalutation)
+
+st.write(results_df)
+st.write(eval_score)
 
 # for choice in response.choices:
 #  print(choice.message.content)
