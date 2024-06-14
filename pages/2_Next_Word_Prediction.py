@@ -8,6 +8,8 @@ import string
 
 load_dotenv()
 
+if 'results_df' not in st.session_state:
+    st.session_state.results_df = pd.DataFrame()
 
 # Create Azure OpenAI Client
 # client = AzureOpenAI(
@@ -35,11 +37,10 @@ def result_json_present(filename="./data/next_word_prediction_results.json"):
     return False
     
 
-
 # get the next word prediction by submitting the prefix and then calling the openai api
-def get_next_word_predictions(prefix: str):
+def get_next_word_predictions(prefix: str, selected_model: str):
     next_word_predictions = client.chat.completions.create(
-        model="gpt-4o", # model = "gpt-35-turbo" or "gpt-4".
+        model=selected_model, # model = "gpt-35-turbo" or "gpt-4".
         max_tokens=5,
         temperature=1,   
         n=10,
@@ -66,32 +67,38 @@ def evaluate_next_words(next_word_predictions, next_word: str):
 if True:
     # check if results are present, if yes, load and store it in data frame
     if result_json_present():
-        data = pd.read_json("./data/next_word_prediction_results.json")
-        results_df = pd.DataFrame(data)
+        if st.button("load results"):
+            data = pd.read_json("./data/next_word_prediction_results.json")
+            st.session_state.results_df = pd.DataFrame(data)
+
+
 
     # iterate over data to get all results
-    else: 
-        results = []
-        for i, row in df.iterrows():
-            next_word_predictions = get_next_word_predictions(row['prefix'])
+    models = ["gpt-4o", "gpt-35-turbo"]
+    selected_model=st.radio("select model", models)
+    results = []
+    if st.button("run benchmark"):
+        for i, row in df.head(10).iterrows():
+            next_word_predictions = get_next_word_predictions(row['prefix'], selected_model)
             evaluation = evaluate_next_words(next_word_predictions, row['next-word'])
             results.append({
                 'prefix': row['prefix'],
                 'next-word': row['next-word'],
+                'selected_model': selected_model,
                 'evaluation': evaluation
             })
-        results_df = pd.DataFrame(results)
-        results_df.to_json("./data/next_word_prediction_results.json", orient="records")
+        st.session_state.results_df = pd.DataFrame(results)
+   
+   
 
-    eval_score = results_df['evaluation'].sum() / len(results_df)
-
-        
-
-    st.write(results_df)
-    st.write(eval_score)
-
-# for choice in response.choices:
-#  print(choice.message.content)
+    if st.button("save results"):
+        st.session_state.results_df.to_json("./data/next_word_prediction_results.json", orient="records")
 
 
-# evaluate("Swissmedic is the","greatest")
+
+    if not st.session_state.results_df.empty: 
+        eval_score = st.session_state.results_df['evaluation'].sum() / len(st.session_state.results_df)
+
+        st.write(st.session_state.results_df)
+        st.write(eval_score)
+
